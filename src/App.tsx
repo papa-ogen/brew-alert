@@ -3,11 +3,7 @@ import "./App.css";
 import { fetch } from "@tauri-apps/api/http";
 import { BrewState, IStatus } from "./types";
 import { move_window, Position } from "tauri-plugin-positioner-api";
-import {
-  isPermissionGranted,
-  requestPermission,
-  sendNotification,
-} from "@tauri-apps/api/notification";
+import { useNotification } from "./useNotification";
 
 const SHELLY_PLUGIN_URL = "http://192.168.0.47/rpc/Shelly.GetStatus";
 const COFFEE_POWER_THRESHOLD = 10;
@@ -50,6 +46,15 @@ const CoffeeIcon = ({
 };
 
 const Off = () => {
+  const { notify } = useNotification({
+    body: "Coffee machine is off!",
+    sound: "default",
+  });
+
+  useEffect(() => {
+    notify();
+  }, []);
+
   return (
     <div className="base off">
       <div className="status">
@@ -61,6 +66,14 @@ const Off = () => {
 };
 
 const Brewing = () => {
+  const { notify } = useNotification({
+    body: "Coffee is Brewing!",
+  });
+
+  useEffect(() => {
+    notify();
+  }, []);
+
   return (
     <div className="base brewing">
       <div className="status">
@@ -72,25 +85,12 @@ const Brewing = () => {
 };
 
 const Done = () => {
+  const { notify } = useNotification({
+    body: "Coffee is Done!",
+  });
+
   useEffect(() => {
-    const shipNotification = async () => {
-      let permissionGranted = await isPermissionGranted();
-      if (!permissionGranted) {
-        const permission = await requestPermission();
-        permissionGranted = permission === "granted";
-      }
-
-      if (permissionGranted) {
-        sendNotification({
-          title: "BREW ALERT",
-          body: "Coffee is Done!",
-          sound: "done",
-          icon: "assets/done.png",
-        });
-      }
-    };
-
-    shipNotification();
+    notify();
   }, []);
 
   return (
