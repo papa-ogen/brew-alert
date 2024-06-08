@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import "./App.css";
 import { fetch } from "@tauri-apps/api/http";
 import { BrewState, IStatus } from "./types";
@@ -141,7 +141,9 @@ const Brew = () => {
         <pre style={{ color: "black", padding: "1rem;" }}>
           power: {JSON.stringify(power, undefined, 2)}
         </pre>
-        <button onClick={() => setDebug(false)}>Hide Debug</button>
+        <button type="button" onClick={() => setDebug(false)}>
+          Hide Debug
+        </button>
       </div>
     );
 
