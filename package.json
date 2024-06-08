@@ -13,6 +13,7 @@
     "@types/axios": "^0.14.0",
     "axios": "^1.7.2",
     "preact": "^10.16.0",
+    "tauri-plugin-positioner-api": "^0.2.7",
     "websocket": "^1.0.35"
   },
   "devDependencies": {

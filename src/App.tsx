@@ -2,9 +2,12 @@ import { useEffect, useState } from "preact/hooks";
 import "./App.css";
 import { fetch } from "@tauri-apps/api/http";
 import { IStatus } from "./types";
+import { move_window, Position } from "tauri-plugin-positioner-api";
 
 const SHELLY_PLUGIN_URL = "http://192.168.0.47/rpc/Shelly.GetStatus";
 const COFFEE_POWER_THRESHOLD = 10;
+
+move_window(Position.RightCenter);
 
 function App() {
   const [data, setData] = useState<IStatus | null>(null);
