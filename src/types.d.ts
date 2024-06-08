@@ -79,3 +79,5 @@ export interface IStatus {
     connected: boolean;
   };
 }
+
+export type BrewState = "OFF" | "ON" | "DONE";
