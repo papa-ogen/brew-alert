@@ -1,51 +1,52 @@
-import { useState } from "preact/hooks";
-import preactLogo from "./assets/preact.svg";
-import { invoke } from "@tauri-apps/api/tauri";
+import { useEffect, useState } from "preact/hooks";
 import "./App.css";
+import { fetch } from "@tauri-apps/api/http";
+import { IStatus } from "./types";
+
+const SHELLY_PLUGIN_URL = "http://192.168.0.47/rpc/Shelly.GetStatus";
+const COFFEE_POWER_THRESHOLD = 10;
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+  const [data, setData] = useState<IStatus | null>(null);
+  const [alert, setAlert] = useState<string>("");
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-    setGreetMsg(await invoke("greet", { name }));
-  }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(SHELLY_PLUGIN_URL);
+
+        const data = response.data as IStatus;
+        setData(data);
+
+        if (data["switch:0"].apower < COFFEE_POWER_THRESHOLD) {
+          // Assuming power < 10 W indicates brewing is done
+          setAlert("Brewing is done!");
+        } else {
+          setAlert("");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+    const interval = setInterval(fetchData, 1000); // Fetch data every 5 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
+  console.log(data);
 
   return (
-    <div class="container">
-      <h1>Welcome to Tauri!</h1>
-
-      <div class="row">
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" class="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" class="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://preactjs.com" target="_blank">
-          <img src={preactLogo} class="logo preact" alt="Preact logo" />
-        </a>
-      </div>
-
-      <p>Click on the Tauri, Vite, and Preact logos to learn more.</p>
-
-      <form
-        class="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onInput={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-
-      <p>{greetMsg}</p>
+    <div>
+      <h1>Power Consumption Monitor</h1>
+      {data !== null ? (
+        <p>Current power consumption: {data["switch:0"].apower} W</p>
+      ) : (
+        <p>Fetching power data...</p>
+      )}
+      {alert && <p>{alert}</p>}
+      <p></p>
     </div>
   );
 }
