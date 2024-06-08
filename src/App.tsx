@@ -3,7 +3,11 @@ import "./App.css";
 import { fetch } from "@tauri-apps/api/http";
 import { BrewState, IStatus } from "./types";
 import { move_window, Position } from "tauri-plugin-positioner-api";
-import { playSound } from "./playSound";
+import {
+  isPermissionGranted,
+  requestPermission,
+  sendNotification,
+} from "@tauri-apps/api/notification";
 
 const SHELLY_PLUGIN_URL = "http://192.168.0.47/rpc/Shelly.GetStatus";
 const COFFEE_POWER_THRESHOLD = 10;
@@ -68,10 +72,25 @@ const Brewing = () => {
 };
 
 const Done = () => {
-  const audioRef = useRef<HTMLVideoElement>(null);
-
   useEffect(() => {
-    playSound(audioRef.current!);
+    const shipNotification = async () => {
+      let permissionGranted = await isPermissionGranted();
+      if (!permissionGranted) {
+        const permission = await requestPermission();
+        permissionGranted = permission === "granted";
+      }
+
+      if (permissionGranted) {
+        sendNotification({
+          title: "BREW ALERT",
+          body: "Coffee is Done!",
+          sound: "done",
+          icon: "assets/done.png",
+        });
+      }
+    };
+
+    shipNotification();
   }, []);
 
   return (
@@ -80,7 +99,6 @@ const Done = () => {
         <h1>Done</h1>
         <CoffeeIcon />
       </div>
-      <video ref={audioRef} controls></video>
     </div>
   );
 };
@@ -100,7 +118,7 @@ const Brew = () => {
         setPower(data["switch:0"].apower);
 
         if (data["switch:0"].apower === 0) {
-          setBrewState("DONE");
+          setBrewState("OFF");
         } else if (data["switch:0"].apower < COFFEE_POWER_THRESHOLD) {
           setBrewState("DONE");
         } else {
