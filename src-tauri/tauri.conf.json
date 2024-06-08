@@ -20,6 +20,11 @@
         "all": true,
         "request": true,
         "scope": ["http://**"]
+      },
+      "protocol": {
+        "all": true,
+        "asset": true,
+        "assetScope": ["**"]
       }
     },
     "windows": [
@@ -30,7 +35,7 @@
       }
     ],
     "security": {
-      "csp": null
+      "csp": "default-src 'self'; media-src 'self' asset: https://asset.localhost;"
     },
     "bundle": {
       "active": true,

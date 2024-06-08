@@ -1,8 +1,9 @@
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import "./App.css";
 import { fetch } from "@tauri-apps/api/http";
 import { BrewState, IStatus } from "./types";
 import { move_window, Position } from "tauri-plugin-positioner-api";
+import { playSound } from "./playSound";
 
 const SHELLY_PLUGIN_URL = "http://192.168.0.47/rpc/Shelly.GetStatus";
 const COFFEE_POWER_THRESHOLD = 10;
@@ -67,18 +68,27 @@ const Brewing = () => {
 };
 
 const Done = () => {
+  const audioRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    playSound(audioRef.current!);
+  }, []);
+
   return (
     <div className="base done">
       <div className="status">
         <h1>Done</h1>
         <CoffeeIcon />
       </div>
+      <video ref={audioRef} controls></video>
     </div>
   );
 };
 
 const Brew = () => {
   const [brewState, setBrewState] = useState<BrewState>("OFF");
+  const [debug, setDebug] = useState(true);
+  const [power, setPower] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -87,8 +97,10 @@ const Brew = () => {
 
         const data = response.data as IStatus;
 
+        setPower(data["switch:0"].apower);
+
         if (data["switch:0"].apower === 0) {
-          setBrewState("OFF");
+          setBrewState("DONE");
         } else if (data["switch:0"].apower < COFFEE_POWER_THRESHOLD) {
           setBrewState("DONE");
         } else {
@@ -104,6 +116,16 @@ const Brew = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  if (debug)
+    return (
+      <div style={{ padding: "1rem" }}>
+        <pre style={{ color: "black", padding: "1rem;" }}>
+          power: {JSON.stringify(power, undefined, 2)}
+        </pre>
+        <button onClick={() => setDebug(false)}>Hide Debug</button>
+      </div>
+    );
 
   if (brewState === "OFF") {
     return <Off />;
