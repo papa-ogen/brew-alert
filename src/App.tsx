@@ -5,7 +5,7 @@ import { BrewState, IStatus } from "./types";
 import { move_window, Position } from "tauri-plugin-positioner-api";
 import { useNotification } from "./useNotification";
 
-const SHELLY_PLUGIN_URL = "http://192.168.0.47/rpc/Shelly.GetStatus";
+const SHELLY_PLUGIN_URL = "http://192.168.68.112";
 const COFFEE_POWER_THRESHOLD = 10;
 const FETCH_INTERVAL = 1000;
 
@@ -111,7 +111,9 @@ const Brew = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(SHELLY_PLUGIN_URL);
+        const response = await fetch(
+          `${SHELLY_PLUGIN_URL}/rpc/Shelly.GetStatus`
+        );
 
         const data = response.data as IStatus;
 

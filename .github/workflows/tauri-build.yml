@@ -55,10 +55,13 @@ jobs:
         # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
         run: yarn install # change this to npm or pnpm depending on which one you use.
 
+      - name: Decode and set private key
+        run: echo ${{ secrets.TAURI_PRIVATE_KEY }} | base64 --decode > decoded_private_key.pem
+
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+          TAURI_PRIVATE_KEY: $(cat decoded_private_key.pem)
         with:
           tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseName: "App v__VERSION__"
