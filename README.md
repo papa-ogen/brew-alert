@@ -15,5 +15,4 @@ If you have trouble installing, run `yarn tauri info` to see which deps you need
 
 - rust `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
 
-![release]
-(https://github.com/papa-ogen/brew-alert/actions/workflows/tauri-build.yml/badge.svg?branch=release)
+![release](https://github.com/papa-ogen/brew-alert/actions/workflows/tauri-build.yml/badge.svg?branch=release)
