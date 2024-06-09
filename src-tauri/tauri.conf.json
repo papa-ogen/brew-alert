@@ -56,7 +56,8 @@
       "active": true,
       "endpoints": [
         "https://my-update-server.com/api/update/{{target}}/{{current_version}}"
-      ]
+      ],
+      "publicKey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDNEMzlEODgyNDA2NzZGRDQKUldUVWIyZEFndGc1UFl4NkNDMDJKSmc5RGpFNXBCSlo5ZzJWT2h2TE1BczJZY1FFaGp6b3VFWmkK"
     }
   }
 }
