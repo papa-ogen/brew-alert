@@ -18,10 +18,16 @@
     "websocket": "^1.0.35"
   },
   "devDependencies": {
+    "msw": "^2.3.1",
     "@preact/preset-vite": "^2.5.0",
     "@tauri-apps/api": "^1.5.6",
     "@tauri-apps/cli": "^1.5.14",
     "typescript": "^5.0.2",
     "vite": "^5.0.0"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }
