@@ -6,7 +6,7 @@ import { move_window, Position } from "tauri-plugin-positioner-api";
 import { useNotification } from "./useNotification";
 import { CoffeeIcon } from "./CoffeeIcon";
 import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime"; // ES 2015
+import relativeTime from "dayjs/plugin/relativeTime";
 
 dayjs.extend(relativeTime);
 
@@ -82,7 +82,7 @@ const Done = ({ statusText }: { statusText?: string }) => {
 };
 
 const Brew = () => {
-  const [brewState, setBrewState] = useState<BrewState>("ON");
+  const [brewState, setBrewState] = useState<BrewState>("OFF");
   const [debug, setDebug] = useState(true);
   const [power, setPower] = useState(0);
   const [brewTime, setBrewTime] = useState<BrewTime>({
